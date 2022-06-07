@@ -50,6 +50,21 @@ export const postRouter = createRouter()
       });
     },
   })
+  // read
+  .query('all-ssg', {
+    async resolve() {
+      /**
+       * For pagination you can have a look at this docs site
+       * @link https://trpc.io/docs/useInfiniteQuery
+       */
+
+      const posts = await prisma.post.findMany({
+        select: defaultPostSelect,
+      });
+
+      return posts.map((post) => ({ ...post, title: 'SSG' + post.title }));
+    },
+  })
   .query('byId', {
     input: z.object({
       id: z.string(),
