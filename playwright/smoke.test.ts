@@ -5,18 +5,18 @@ test.setTimeout(35e3);
 test('go to /', async ({ page }) => {
   await page.goto('/');
 
-  await page.waitForSelector(`text=Starter`);
+  await page.waitForSelector(`text=Welcome`);
 });
 
 test('test 404', async ({ page }) => {
-  const res = await page.goto('/post/not-found');
+  const res = await page.goto('ssr/post/not-found');
   expect(res?.status()).toBe(404);
 });
 
 test('add a post', async ({ page, browser }) => {
   const nonce = `${Math.random()}`;
 
-  await page.goto('/');
+  await page.goto('/ssr');
   await page.fill(`[name=title]`, nonce);
   await page.fill(`[name=text]`, nonce);
   await page.click(`form [type=submit]`);
@@ -29,7 +29,7 @@ test('add a post', async ({ page, browser }) => {
     javaScriptEnabled: false,
   });
   const ssrPage = await ssrContext.newPage();
-  await ssrPage.goto('/');
+  await ssrPage.goto('/ssr');
 
   expect(await ssrPage.content()).toContain(nonce);
 });
@@ -38,7 +38,7 @@ test('server-side rendering test', async ({ page, browser }) => {
   // add a post
   const nonce = `${Math.random()}`;
 
-  await page.goto('/');
+  await page.goto('/ssr');
   await page.fill(`[name=title]`, nonce);
   await page.fill(`[name=text]`, nonce);
   await page.click(`form [type=submit]`);
@@ -49,6 +49,6 @@ test('server-side rendering test', async ({ page, browser }) => {
     javaScriptEnabled: false,
   });
   const ssrPage = await ssrContext.newPage();
-  await ssrPage.goto('/');
+  await ssrPage.goto('/ssr');
   expect(await ssrPage.content()).toContain(nonce);
 });
